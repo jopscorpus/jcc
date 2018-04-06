@@ -1,0 +1,196 @@
+USE [pmgbiq01]
+GO
+
+/****** Object:  StoredProcedure [dbo].[spCheckDWHTablesCountVsPrd]    Script Date: 2/20/2018 4:14:40 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[spCheckDWHTablesCountVsPrd]
+as 
+
+
+--Get count in QAS--
+WITH QASCount as (
+select 
+	 (SELECT COUNT(1) FROM dwh.Calendar) AS 'dwh.Calendar'
+	,(SELECT COUNT(1) FROM dwh.Contract) AS 'dwh.Contract'
+	,(SELECT COUNT(1) FROM dwh.ContractCompCheck) AS 'dwh.ContractCompCheck'
+	,(SELECT COUNT(1) FROM dwh.ContractObjective) AS 'dwh.ContractObjective'
+	,(SELECT COUNT(1) FROM dwh.ContractPayment) AS 'dwh.ContractPayment'
+	,(SELECT COUNT(1) FROM dwh.Customer) AS 'dwh.Customer'
+	,(SELECT COUNT(1) FROM dwh.CustomerAddress) AS 'dwh.CustomerAddress'
+	,(SELECT COUNT(1) FROM dwh.CustomerAttribute) AS 'dwh.CustomerAttribute'
+	,(SELECT COUNT(1) FROM dwh.CustomerContact) AS 'dwh.CustomerContact'
+	,(SELECT COUNT(1) FROM dwh.CustomerHier) AS 'dwh.CustomerHier'
+	,(SELECT COUNT(1) FROM dwh.CustomerHierFlat) AS 'dwh.CustomerHierFlat'
+	,(SELECT COUNT(1) FROM dwh.CustomerLogPartner) AS 'dwh.CustomerLogPartner'
+	,(SELECT COUNT(1) FROM dwh.CustomerPOSM) AS 'dwh.CustomerPOSM'
+	,(SELECT COUNT(1) FROM dwh.CustomerSD) AS 'dwh.CustomerSD'
+	,(SELECT COUNT(1) FROM dwh.CustomerTimetable) AS 'dwh.CustomerTimetable'
+	,(SELECT COUNT(1) FROM dwh.CustomerVisitInSalesCycle) AS 'dwh.CustomerVisitInSalesCycle'
+	,(SELECT COUNT(1) FROM dwh.Employee) AS 'dwh.Employee'
+	,(SELECT COUNT(1) FROM dwh.EmployeeGeo) AS 'dwh.EmployeeGeo'
+	,(SELECT COUNT(1) FROM dwh.Geo) AS 'dwh.Geo'
+	,(SELECT COUNT(1) FROM dwh.InternalOrder) AS 'dwh.InternalOrder'
+	,(SELECT COUNT(1) FROM dwh.InternalOrderItem) AS 'dwh.InternalOrderItem'
+	,(SELECT COUNT(1) FROM dwh.Inventory) AS 'dwh.Inventory'
+	,(SELECT COUNT(1) FROM dwh.InventoryProduct) AS 'dwh.InventoryProduct'
+	,(SELECT COUNT(1) FROM dwh.InventoryPhysStockCount) AS 'dwh.InventoryPhysStockCount'
+	,(SELECT COUNT(1) FROM dwh.InventoryPhysStockCountProduct) AS 'dwh.InventoryPhysStockCountProduct'
+	,(SELECT COUNT(1) FROM dwh.ListOfValues) AS 'dwh.ListOfValues'
+	,(SELECT COUNT(1) FROM dwh.Movement) AS 'dwh.Movement'
+	,(SELECT COUNT(1) FROM dwh.MovementItem) AS 'dwh.MovementItem'
+	,(SELECT COUNT(1) FROM dwh.Product) AS 'dwh.Product'
+	,(SELECT COUNT(1) FROM dwh.ProductMAS) AS 'dwh.ProductMAS'
+	,(SELECT COUNT(1) FROM dwh.Reward) AS 'dwh.Reward'
+	,(SELECT COUNT(1) FROM dwh.RewardItem) AS 'dwh.RewardItem'
+	,(SELECT COUNT(1) FROM dwh.SalesOrder) AS 'dwh.SalesOrder'
+	,(SELECT COUNT(1) FROM dwh.SalesOrderItem) AS 'dwh.SalesOrderItem'
+	,(SELECT COUNT(1) FROM dwh.Visit) AS 'dwh.Visit'
+	,(SELECT COUNT(1) FROM dwh.VisitAct ) AS 'dwh.VisitAct '
+	,(SELECT COUNT(1) FROM dwh.VisitActDetail ) AS 'dwh.VisitActDetail '
+	,(SELECT COUNT(1) FROM dwh.VisitActDetailAllAnswer ) AS 'dwh.VisitActDetailAllAnswer '
+	,(SELECT COUNT(1) FROM dwh.Volume ) AS 'dwh.Volume '
+	,(SELECT COUNT(1) FROM dwh.VolumeAlw) AS 'dwh.VolumeAlw'
+	,(SELECT COUNT(1) FROM dwh.VolumeFACode) AS 'dwh.VolumeFACode'
+	,(SELECT COUNT(1) FROM dwh.InventorySapMB52) AS 'dwh.InventorySapMB52'
+	,(SELECT COUNT(1) FROM dwh.MovementSapMB51) AS 'dwh.MovementSapMB51'
+	,(SELECT COUNT(1) FROM [oda].[Product]) AS 'oda.Product'
+	,(SELECT COUNT(1) FROM [oda].[VolumeDetail]) AS 'oda.VolumeDetail'
+)
+
+select TableName, CountQAS
+INTO #QAS
+
+from (select * from QASCount) as p
+
+UNPIVOT (
+	CountQAS FOR TableName IN 
+		(
+			 [dwh.Calendar]
+			,[dwh.Contract]
+			,[dwh.ContractCompCheck]
+			,[dwh.ContractObjective]
+			,[dwh.ContractPayment]
+			,[dwh.Customer]
+			,[dwh.CustomerAddress]
+			,[dwh.CustomerAttribute]
+			,[dwh.CustomerContact]
+			,[dwh.CustomerHier]
+			,[dwh.CustomerHierFlat]
+			,[dwh.CustomerLogPartner]
+			,[dwh.CustomerPOSM]
+			,[dwh.CustomerSD]
+			,[dwh.CustomerTimetable]
+			,[dwh.CustomerVisitInSalesCycle]
+			,[dwh.Employee]
+			,[dwh.EmployeeGeo]
+			,[dwh.Geo]
+			,[dwh.InternalOrder]
+			,[dwh.InternalOrderItem]
+			,[dwh.Inventory]
+			,[dwh.InventoryProduct]
+			,[dwh.InventoryPhysStockCount]
+			,[dwh.InventoryPhysStockCountProduct]
+			,[dwh.ListOfValues]
+			,[dwh.Movement]
+			,[dwh.MovementItem]
+			,[dwh.Product]
+			,[dwh.ProductMAS]
+			,[dwh.Reward]
+			,[dwh.RewardItem]
+			,[dwh.SalesOrder]
+			,[dwh.SalesOrderItem]
+			,[dwh.Visit]
+			,[dwh.VisitAct ]
+			,[dwh.VisitActDetail ]
+			,[dwh.VisitActDetailAllAnswer ]
+			,[dwh.Volume ]
+			,[dwh.VolumeAlw]
+			,[dwh.VolumeFACode]
+			,[dwh.InventorySapMB52]
+			,[dwh.MovementSapMB51]
+			,[oda.Product]
+			,[oda.VolumeDetail]
+		)
+) as U;
+
+
+
+
+--Get count from PRD--
+WITH PRDCount as (
+select 
+	 (SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Calendar) AS 'dwh.Calendar'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Contract) AS 'dwh.Contract'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.ContractCompCheck) AS 'dwh.ContractCompCheck'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.ContractObjective) AS 'dwh.ContractObjective'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.ContractPayment) AS 'dwh.ContractPayment'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Customer) AS 'dwh.Customer'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerAddress) AS 'dwh.CustomerAddress'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerAttribute) AS 'dwh.CustomerAttribute'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerContact) AS 'dwh.CustomerContact'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerHier) AS 'dwh.CustomerHier'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerHierFlat) AS 'dwh.CustomerHierFlat'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerLogPartner) AS 'dwh.CustomerLogPartner'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerPOSM) AS 'dwh.CustomerPOSM'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerSD) AS 'dwh.CustomerSD'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerTimetable) AS 'dwh.CustomerTimetable'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.CustomerVisitInSalesCycle) AS 'dwh.CustomerVisitInSalesCycle'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Employee) AS 'dwh.Employee'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.EmployeeGeo) AS 'dwh.EmployeeGeo'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Geo) AS 'dwh.Geo'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.InternalOrder) AS 'dwh.InternalOrder'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.InternalOrderItem) AS 'dwh.InternalOrderItem'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Inventory) AS 'dwh.Inventory'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.InventoryProduct) AS 'dwh.InventoryProduct'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.InventoryPhysStockCount) AS 'dwh.InventoryPhysStockCount'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.InventoryPhysStockCountProduct) AS 'dwh.InventoryPhysStockCountProduct'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.ListOfValues) AS 'dwh.ListOfValues'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Movement) AS 'dwh.Movement'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.MovementItem) AS 'dwh.MovementItem'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Product) AS 'dwh.Product'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.ProductMAS) AS 'dwh.ProductMAS'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Reward) AS 'dwh.Reward'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.RewardItem) AS 'dwh.RewardItem'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.SalesOrder) AS 'dwh.SalesOrder'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.SalesOrderItem) AS 'dwh.SalesOrderItem'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Visit) AS 'dwh.Visit'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.VisitAct ) AS 'dwh.VisitAct '
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.VisitActDetail ) AS 'dwh.VisitActDetail '
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.VisitActDetailAllAnswer ) AS 'dwh.VisitActDetailAllAnswer '
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.Volume ) AS 'dwh.Volume '
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.VolumeAlw) AS 'dwh.VolumeAlw'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.VolumeFACode) AS 'dwh.VolumeFACode'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.InventorySapMB52) AS 'dwh.InventorySapMB52'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.dwh.MovementSapMB51) AS 'dwh.MovementSapMB51'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.[oda].[Product]) AS 'oda.Product'
+	,(SELECT COUNT(1) FROM [PMGBIDBPRD.APP.PMI\PRDDE].pmgbip01.[oda].[VolumeDetail]) AS 'oda.VolumeDetail'
+)
+
+select TableName, CountPRD
+INTO #PRD
+
+from (select * from PRDCount) as piv
+
+UNPIVOT (
+	CountPRD FOR TableName IN 
+		(
+			 [dwh.Calendar]
+			,
+			,[schemaTwo.TableTwo
+		)
+) as Upiv;
+
+select qas.TableName, qas.CountQAS, prd.CountPRD 
+from #QAS qas
+	join #PRD prd on qas.TableName = prd.TableName
+
+
+	
+GO
+
+
